@@ -1,0 +1,63 @@
+---
+title: "דפוסי התיישבות בארץ ישראל"
+format: html
+lang: he
+mainfont: "Arial"
+toc: true
+page-layout: full
+---
+
+## ניתוח 1: כלי חרס לפי תקופה וסוג
+
+```{r}
+library(ggplot2)
+
+ceramics_data <- data.frame(
+  stratum = rep(c("I", "II", "III", "IV", "V"), each = 4),
+  period = rep(c("ברזל 2ב", "ברזל 2א", "ברזל 1", "ברונזה מאוחרת", "ברונזה תיכונה"), each = 4),
+  vessel_type = rep(c("קערות", "פכים", "קנקנים", "פכיות"), times = 5),
+  count = c(45, 30, 60, 12, 38, 25, 52, 8, 20, 15, 30, 5, 25, 20, 35, 7, 30, 18, 40, 10)
+)
+
+ceramics_data$period <- factor(ceramics_data$period, 
+                     levels = c("ברונזה תיכונה", "ברונזה מאוחרת", 
+                               "ברזל 1", "ברזל 2א", "ברזל 2ב"))
+
+ggplot(ceramics_data, aes(x = period, y = count, fill = vessel_type)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(title = "התפלגות כלי חרס לפי תקופה וסוג",
+       x = "תקופה", y = "מספר כלים",
+       fill = "סוג כלי") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        plot.title = element_text(hjust = 0.5))
+```
+
+## ניתוח 2: מדד אי-יציבות במעברים בין תקופות
+
+```{r}
+transition_periods <- c(
+  "ברונזה תיכונה-מאוחרת", 
+  "ברונזה מאוחרת-ברזל 1",
+  "ברזל 1-ברזל 2",
+  "ברזל 2-פרסית",
+  "פרסית-הלניסטית",
+  "הלניסטית-רומית"
+)
+
+instability_values <- c(72, 85, 58, 76, 65, 42)
+
+instability_data <- data.frame(
+  transition = transition_periods,
+  instability = instability_values
+)
+
+ggplot(instability_data, aes(x = transition, y = instability)) +
+  geom_bar(stat = "identity", fill = "coral") +
+  labs(title = "מדד אי-היציבות במעברים בין תקופות",
+       x = "מעבר בין תקופות", 
+       y = "מדד אי-היציבות (%)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        plot.title = element_text(hjust = 0.5))
+```
